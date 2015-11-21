@@ -15,8 +15,5 @@
   "bugs": {
     "url": "https://github.com/AshKyd/web-games-campjs-2015/issues"
   },
-  "dependencies": {},
-  "scripts": {
-      "deploy": "rsync -avz ./ pi@labs.ash.ms:/var/www/labs.ash.ms/labs/campjs2k15/"
-  }
+  "dependencies": {}
 }
