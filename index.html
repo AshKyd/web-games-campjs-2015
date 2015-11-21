@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Building games for the web - a talk by Ash Kyd</title>
+        <meta name="viewport" content="width=device-width">
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/headjs/1.0.3/head.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.1.0/js/reveal.js" defer></script>
+        <script src="scripts/index.js" defer></script>
+
+        <link rel="stylesheet" type="text/css" href="styles/style.css">
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.1.0/css/reveal.css">
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.1.0/css/theme/black.css">
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.1.0/lib/css/zenburn.min.css">
+        <style type="text/css">
+            body{background:black;}
+        </style>
+        <!-- Cube demo -->
+        <script src="demos/cube.js" defer></script>
+        <link rel="stylesheet" type="text/css" href="demos/cube.css">
+
+        <!-- stacking demo -->
+        <script src="demos/building-blocks.js" defer></script>
+
+        <!-- physics demo -->
+        <script src="demos/vendor/physics.min.js" defer></script>
+        <script src="demos/physics.js" defer></script>
+
+        <!-- pathfinding demo -->
+        <script src="demos/vendor/pathfinding-browser.min.js"></script>
+        <script src="demos/pathfinding.js" defer></script>
+
+
+    </head>
+    <body>
+        <div class="reveal">
+            <div class="slides">
+
+<section id="hello">
+    <h1>Building games for the web</h1>
+    <h2>Ash Kyd</h2>
+    <ul class="inline">
+        <li><a href="https://twitter.com/ashkyd">@ashkyd</a></li>
+        <li><a href="https://ash.ms">ash.ms</a></li>
+    </ul>
+    <code style="display:block;text-align:center;"><script>
+    document.write(String(window.location).replace(/https?:\/\//, '').replace(/#.*/,''));
+    </script></code>
+</section>
+<section id="intro">
+    <p style="text-decoration:line-through;">How to make games</p>
+    <p class="fragment">How to teach yourself to make games</p>
+</section>
+<section id="principles-1">
+    <h2>Making games is easy?</h2>
+    <p class="fragment">Kinda</p>
+    <p class="fragment">Sorta</p>
+    <p class="fragment">Once you get the hang of it</p>
+</section>
+<section id="principles-2">
+    <h2>Making games is easy!</h2>
+    <p>Make something achievable</p>
+    <p>Work to your strengths</p>
+    <p>Take ALL of the shortcuts</p>
+</section>
+<section>
+    <h2>Some basics</h2>
+    <ul>
+        <li class="fragment">2D Canvas</li>
+        <li class="fragment">WebGL</li>
+        <li class="fragment">Then all the libraries on top of those</li>
+    </ul>
+</section>
+<section>
+    <h2>Some concepts</h2>
+    <ul>
+        <li>Rendering</li>
+        <li>Interaction</li>
+        <li>Sound</li>
+        <li>Physics</li>
+        <li>Tweening</li>
+        <li>Pathfinding</li>
+        <li>Particles</li>
+        <li>Terrain generation</li>
+        <li>And so much more!</li>
+    </ul>
+</section>
+<section id="road-blocks">
+    <h2>My story: <em>Road Blocks</em>!</h2>
+    <video src="images/beachscene.webm" loop="true"></video>
+    <!-- The tech (canvas, HTML, web audio). The concept: drag blocks around to
+    complete the road. -->
+</section>
+<section id="achievable">
+    <h2>Something achievable</h2>
+    <div class="cube fragment">
+        <canvas></canvas>
+		<form>
+		  <input id="x1" type="range" value="100" min="0" max="500">
+		  <input id="x2" type="range" value="100" min="0" max="500">
+		  <input id="y" type="range" value="100" min="0" max="500">
+		  <input id="color" type="color" value="#ff8d4b">
+		</form>
+    </div>
+</section>
+<section id="achievable-2">
+    <h2>Work to your strengths</h2>
+    <ul>
+        <li>Prototype with familiar tech</li>
+        <li>Programmer art is awesome</li>
+        <li>Polish comes second to function</li>
+    </ul>
+</section>
+<section id="achievable-3">
+    <h2>In my case</h2>
+    <ul>
+        <li>I'm all about isometric art</li>
+        <li>You can do some cool stuff in 13kb</li>
+        <li>Stacking boxes is fun</li>
+    </ul>
+</section>
+<section id="achievable-4">
+    <h2>Stacking boxes is fun</h2>
+    <div class="blocks">
+        <canvas></canvas>
+    </div>
+</section>
+<section id="achievable-code">
+    <h2>Code: ~420 bytes</h2>
+    <pre><code>var cubes = [
+    [1, 2.0 ,1,1,1,.7,'#C8AF9E'],
+    [1, 1.3 ,1,1,1,.3,'#7DD17D'],
+    [1, 0.5 ,.1,.1,.1,.1,'#DFA656'],
+    [1, 0.45,.3,.3,.3,.05,'#84C171'],
+    [1, 0.35,.2,.2,.2,.05,'#84C171'],
+    [1, 0.25,.1,.1,.1,.05,'#84C171'],
+];
+
+function draw(){
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  var wobble = 1 + Math.max(Math.sin(Date.now()/250), 0)/10;
+
+  var cubeSize = 150;
+  cubes.forEach(function(cube){
+      drawCube(
+        cube[0] * canvas.width/2,
+        cube[1] * cubeSize * wobble,
+        cube[3] * cubeSize, // x1
+        cube[4] * cubeSize, // x2
+        cube[5] * cubeSize, // y
+        cube[6], // color
+        ctx
+      );
+  });
+  requestAnimationFrame(draw);
+}
+draw();</code>
+</pre>
+</section>
+<section id="shortcuts-1">
+    <h2>Take all the shortcuts!</h2>
+    <ul>
+        <li>NPM is full of goodies</li>
+        <li>You don't need to reinvent the wheel (or the physics)</li>
+        <li>Do what you know best</li>
+    </ul>
+</section>
+
+<section id="physics-1" data-background="images/physics.png">
+    <p class="fragment" style="background:black">HEY COOL LET'S USE THIS</p>
+</section>
+<section id="physics-2">
+    <h2>Attractive attractors</h2>
+    <div class="physics">
+        <canvas></canvas>
+    </div>
+</section>
+
+<section id="physics-code">
+    <h2>Code: ~840 bytes</h2>
+<pre><code>var canvas = document.querySelector('.physics canvas');
+canvas.width = window.innerWidth * 0.66;
+canvas.height = canvas.width * 0.66;
+var ctx = canvas.getContext('2d');
+
+var physics = new Physics();
+
+var radius = 50;
+var mass = 25;
+
+var x1 = canvas.width * 0.25;
+var x2 = canvas.width * 0.75;
+var y = canvas.height / 2;
+
+var a = physics.makeParticle(mass, x1, y);
+var b = physics.makeParticle(mass, x2, y);
+
+// Create an attraction between the particles.
+
+// The strength of the bond between two particles.
+var strength = 50000;
+
+// The proximity at which the attraction will be enabled.
+var minDistance = canvas.width;
+
+// Make the attraction and add it to physics
+var attraction = physics.makeAttraction(a, b, strength, minDistance);
+var cubeSize = 80;
+
+var update = {};
+
+var render = function() {
+
+    if (canvas.class !== 'active') {
+        return;
+    }
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    var x1 = a.position.x;
+    var y1 = a.position.y;
+
+    var x2 = b.position.x;
+    var y2 = b.position.y;
+
+    drawCube(
+        x1 - cubeSize * 2,
+        y1,
+        cubeSize, // x1
+        cubeSize, // x2
+        cubeSize, // y
+        '#ff8888', // color
+        ctx
+    );
+
+    drawCube(
+        x2 - cubeSize * 2,
+        y2,
+        cubeSize, // x1
+        cubeSize, // x2
+        cubeSize, // y
+        '#8888ff', // color
+        ctx
+    );
+
+    if (b.resting()) {
+        a.position.set(x1, y);
+        b.position.set(x2, y);
+    }
+
+};
+
+// Bind the render function to when physics updates.
+physics.onUpdate(render);
+
+// Render a posterframe.
+render();
+
+physics.toggle();
+
+// store our physics object on the canvas so we can access it later
+canvas.physics = physics;
+</code></pre>
+</section>
+<section id="pathfinding-1" data-background="images/pathfinding.png">
+
+</section>
+<section id="pathfinding-2">
+    <iframe src="http://qiao.github.io/PathFinding.js/visual/" width="100%" height="700"></iframe>
+</section>
+<section id="pathfinding-3">
+    <h2>Pathfinding</h2>
+    <div class="pathfinding">
+        <canvas></canvas>
+    </div>
+</section>
+<section id="pathfinding-code">
+    <h2>The code: ~770 bytes</h2>
+<pre><code>function getIsometricPos(x, y, tileWidth) {
+    return [
+        (x - y) * (tileWidth / 2), (x + y) * (tileWidth / 4)
+    ];
+}
+
+// Animation function
+function draw() {
+    // Create a grid
+    var grid = new PF.Grid(10, 10);
+
+    // Create some obstacles
+    for (var i = 0; i < 10; i++) {
+        var x = Math.round(Math.random() * 9);
+        var y = Math.round(Math.random() * 9);
+        grid.setWalkableAt(x, y, false);
+    }
+
+    // Find a path
+    var finder = new PF.AStarFinder();
+    var path = finder.findPath(0, 0, 9, 9, grid);
+
+    // start drawing
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    var cubeSize = canvas.width / 20;
+    grid.nodes.forEach(function(row, x) {
+        row.forEach(function(col, y) {
+            // Get x and y coords to draw at.
+            var pos = getIsometricPos(x, y, cubeSize * 2);
+
+            // Pick a colour
+            var color = (x + y) % 2 === 0 ? '#00ff00' : '#66ff66';
+            if (col.walkable === false) {
+                color = '#333333';
+            }
+
+            // Is this point in the path?
+            // Todo: make this more efficient.
+            path.forEach(function(point) {
+                if (point[0] === y &amp;&amp; point[1] === x) {
+                    color = '#8888ff';
+                }
+            });
+
+            // Draw the cube
+            drawCube(
+                canvas.width / 2 + pos[0],
+                canvas.height / 4 + pos[1],
+                cubeSize,
+                cubeSize,
+                cubeSize * (col.walkable ? 1 : 1.5),
+                color,
+                ctx
+            );
+        });
+    });
+
+
+    setTimeout(draw, 2000);
+}
+draw();</code></pre>
+</section>
+<section id="point-is">
+    <h2>Point is…</h2>
+    <ul>
+        <li>You can rapidly prototype stuff</li>
+        <li class="fragment">without having to learn a framework</li>
+    </ul>
+</section>
+<section id="libraries">
+    <h2>Useful libraries</h2>
+    <table>
+    <thead>
+    </thead>
+    <tbody>
+    <tr><td>2D</td><td><strong>pixi.js</strong></td><td>Canvas &amp; WebGL abstraction</td></tr>
+    <tr><td>2D</td><td><strong>Phaser</strong></td><td>Game engine Built on Pixi</td></tr>
+    <tr><td>3D</td><td><strong>three.js</strong></td><td>WebGL engine</td></tr>
+    <tr><td>3D</td><td><strong>Babylon.js</strong></td><td>WebGL engine</td></tr>
+    <tr><td>-</td><td><strong>Cordova</strong></td><td>Go mobile!</td></tr>
+    </tbody>
+    </table>
+</section>
+<section id="resources">
+    <h2>Useful resources</h2>
+    <table>
+    <thead>
+    </thead>
+    <tbody>
+    <tr><td>Mozilla Hacks</td><td>Articles &amp; tutorials</td></tr>
+    <tr><td>phaser.to</td><td>Bunch of tutorials</td></tr>
+    <tr><td>js13k</td><td>13 kb game competition</td></tr>
+    <tr><td>One Game a Month</td><td>Challenge to finish a game every month</td></tr>
+    <tr><td>Global Game Jam</td><td>Create a game in a team over a weekend</td></tr>
+    </tbody>
+    </table>
+
+</section>
+<section id="farewell">
+    <h1>Building games for the web</h1>
+    <h2><a href="https://ash.ms/rb"><span style="opacity:.25">http://</span>ash.ms/rb</a> - play now</h2>
+    <ul class="inline">
+        <li><a href="https://twitter.com/ashkyd">@ashkyd</a></li>
+        <li><a href="https://ash.ms">ash.ms</a></li>
+    </ul>
+</section>
+<section id="road-blocks-farewell">
+    <h2><a href="https://ash.ms/rb"><span style="opacity:.25">http://</span>ash.ms/rb</a></h2>
+    <video src="images/roadblocks.webm" loop="true"></video>
+    <!-- The tech (canvas, HTML, web audio). The concept: drag blocks around to
+    complete the road. -->
+</section>
+            </div>
+        </div>
+    </body>
+</html>

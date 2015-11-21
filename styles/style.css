@@ -1,0 +1,41 @@
+.reveal label.input-button{
+    border-radius:20px;
+    color:#DCDCDC;
+    background:#3F3F3F;
+    display:inline-block;
+    text-align:center;
+    margin:0 auto;
+    cursor:pointer;
+    font-weight:bold;
+    padding:20px 40px;
+}
+.input-button input{
+    display:none;
+}
+
+
+.inline{
+    display:block;
+    margin:0 auto;
+    text-align:center;
+}
+.inline li{
+    display:inline-block;
+    list-style:none;
+    margin:0;
+    padding:0;
+}
+.inline li:before{
+    display:inline-block;
+    margin:0 .3em 0 0.2em;
+    content:"•";
+    color:#E3CEAB;
+}
+.inline li:first-child:before{
+    display: none;
+}
+
+
+iframe{
+    width: 100%;
+}
